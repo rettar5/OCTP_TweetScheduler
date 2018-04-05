@@ -43,6 +43,8 @@ export class TweetScheduler {
           message = data;
         }
       });
+      Log.t("date: ", date);
+      Log.t("message: ", message);
 
       if (date && TweetSchedulerConstants.INVALID_DATE_ERROR != date.toString()) {
         reservedNumber = Batch.TweetScheduler.setSchedule(this.tweetData.accountData.userId, date, message);
