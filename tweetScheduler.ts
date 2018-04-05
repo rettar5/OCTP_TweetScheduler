@@ -46,6 +46,7 @@ export class TweetScheduler {
 
       if (date && TweetSchedulerConstants.INVALID_DATE_ERROR != date.toString()) {
         reservedNumber = Batch.TweetScheduler.setSchedule(this.tweetData.accountData.userId, date, message);
+        result = true;
       } else {
         // Dateにパースできなかったケース
         errorMessage = ErrorTypes.InvalidDateParam;
