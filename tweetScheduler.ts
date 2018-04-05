@@ -36,7 +36,7 @@ export class TweetScheduler {
       let date: Date;
       let message: string;
       parsedQuery.forEach((str, index) => {
-        const data = parsedQuery[1].replace(new RegExp("(^" + quote + "|" + quote + "$)", "g"), "");
+        const data = str.replace(new RegExp("(^" + quote + "|" + quote + "$)", "g"), "");
         if (0 === index) {
           date = new Date(data);
         } else {
