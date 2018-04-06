@@ -1,6 +1,6 @@
 import { OdnTweetData, OdnTweets } from "../../../odnTweets"
 import { OdnPlugins, OdnPluginResultData } from "../../../odnPlugins";
-import { Log } from "../../../odnUtils";
+import {Log, OdnUtils} from "../../../odnUtils";
 import * as Batch from "../../batch/tweetScheduler/tweetScheduler";
 
 export class TweetScheduler {
@@ -62,7 +62,8 @@ export class TweetScheduler {
     tweets.text = (() => {
       const prefix = "@" + this.tweetData.user.screenName + " ";
       if (result) {
-        return prefix + Batch.TweetScheduler.getScheduleKey(reservedDate) + " " + reservedNumber + "番で予約しました。";
+        const formattedDate = OdnUtils.convDateToString(reservedDate, "yyyy年m月d日 H時M分");
+        return prefix + formattedDate + " " + reservedNumber + "番で予約しました。";
       } else {
         return prefix + errorMessage || ErrorTypes.InvalidAddParams;
       }
