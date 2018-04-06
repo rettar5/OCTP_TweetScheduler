@@ -32,22 +32,22 @@ export class TweetScheduler {
     const parsedQuery = this.originalQuery.match(new RegExp(quote + ".+?" + quote, "g"));
 
     // TODO: 削除の実装
+    let reservedDate: Date;
+    let reservedMessage: string;
     if (parsedQuery && 2 === parsedQuery.length) {
-      let date: Date;
-      let message: string;
       parsedQuery.forEach((str, index) => {
         const data = str.replace(new RegExp("(^" + quote + "|" + quote + "$)", "g"), "");
         if (0 === index) {
-          date = new Date(data);
+          reservedDate = new Date(data);
         } else {
-          message = data;
+          reservedMessage = data;
         }
       });
-      Log.t("date: ", date);
-      Log.t("message: ", message);
+      Log.t("reservedDate: ", reservedDate);
+      Log.t("reservedMessage: ", reservedMessage);
 
-      if (date && TweetSchedulerConstants.INVALID_DATE_ERROR != date.toString()) {
-        reservedNumber = Batch.TweetScheduler.setSchedule(this.tweetData.accountData.userId, date, message);
+      if (reservedDate && TweetSchedulerConstants.INVALID_DATE_ERROR != reservedDate.toString()) {
+        reservedNumber = Batch.TweetScheduler.setSchedule(this.tweetData.accountData.userId, reservedDate, reservedMessage);
         result = true;
       } else {
         // Dateにパースできなかったケース
@@ -60,11 +60,11 @@ export class TweetScheduler {
     const tweets = new OdnTweets(this.tweetData.accountData);
     tweets.targetTweetId = this.tweetData.idStr;
     tweets.text = (() => {
-      const prefix = "@" + this.tweetData.user.name + " ";
+      const prefix = "@" + this.tweetData.user.screenName + " ";
       if (result) {
-        return prefix + reservedNumber + "番で予約しました。";
+        return prefix + Batch.TweetScheduler.getScheduleKey(reservedDate) + " " + reservedNumber + "番で予約しました。";
       } else {
-        return errorMessage || ErrorTypes.InvalidAddParams;
+        return prefix + errorMessage || ErrorTypes.InvalidAddParams;
       }
     })();
     tweets.postTweet(() => {
@@ -139,7 +139,6 @@ export class TweetScheduler {
     }
   }
 }
-
 
 namespace TweetSchedulerConstants {
   export const DEFAULT_COMMAND = "schedule";
